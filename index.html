@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MediaHubHNNews</title>
+  <meta name="description" content="MediaHubHNNews - Official site, Privacy Policy, and Terms of Service." />
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6;margin:0;background:#0b1220;color:#e6e6e6}
+    main{max-width:900px;margin:0 auto;padding:40px 20px}
+    h1,h2{line-height:1.2}
+    a{color:#7dd3fc;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .card{background:#111a2e;border:1px solid #1f2a44;border-radius:14px;padding:22px;margin:16px 0}
+    .muted{color:#b8c0d0}
+    .links{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:12px;border:1px solid #1f2a44;background:#0f172a}
+    .btn:hover{background:#111a2e}
+    footer{margin-top:28px;font-size:14px}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MediaHubHNNews</h1>
+    <p class="muted">
+      MediaHubHNNews is a content management and publishing tool that helps create and publish news-style
+      content to third-party platforms (such as TikTok) based on user authorization.
+    </p>
+
+    <div class="card">
+      <h2>Legal</h2>
+      <p>Use the links below to view our policies:</p>
+      <div class="links">
+        <a class="btn" href="./privacy.html">Privacy Policy</a>
+        <a class="btn" href="./terms.html">Terms of Service</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Contact</h2>
+      <p>
+        For any questions, contact:
+        <a href="mailto:mediahubhn@yahoo.com">mediahubhn@yahoo.com</a>
+      </p>
+    </div>
+
+    <footer class="muted">
+      <p>&copy; <span id="year"></span> MediaHubHNNews</p>
+    </footer>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </main>
+</body>
+</html>
