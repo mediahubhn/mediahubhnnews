@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
   <html lang="en">
   <head>
       <meta charset="UTF-8">
@@ -31,13 +31,15 @@
           @keyframes spin {
               to { transform: rotate(360deg); }
           }
+          .success { color: #10b981; }
+          .error { color: #ef4444; }
       </style>
   </head>
   <body>
       <div class="container">
-          <div class="spinner"></div>
-          <h2>Connecting to TikTok...</h2>
-          <p>Redirecting to MediaHub...</p>
+          <div class="spinner" id="spinner"></div>
+          <h2 id="title">Connecting to TikTok...</h2>
+          <p id="message">Redirecting to MediaHub...</p>
       </div>
       <script>
           const params = new URLSearchParams(window.location.search);
@@ -46,14 +48,57 @@
           const error = params.get('error');
           const errorDescription = params.get('error_description');
 
-          const localUrl = 'http://localhost:6050/auth/tiktok/callback';
+          const spinner = document.getElementById('spinner');
+          const title = document.getElementById('title');
+          const message = document.getElementById('message');
 
-          if (error) {
-              window.location.href = `${localUrl}?error=${encodeURIComponent(error)}&error_description=${encodeURIComponent(errorDescription || '')}`;
-          } else if (code && state) {
-              window.location.href = `${localUrl}?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`;
+          // Check if this is a popup with an opener
+          if (window.opener) {
+              // Popup mode - use postMessage
+              if (error) {
+                  window.opener.postMessage({
+                      type: 'TIKTOK_AUTH_ERROR',
+                      error: errorDescription || error
+                  }, '*');
+                  spinner.style.display = 'none';
+                  title.textContent = 'Error';
+                  title.className = 'error';
+                  message.textContent = errorDescription || error;
+                  setTimeout(function() { window.close(); }, 2000);
+              } else if (code && state) {
+                  window.opener.postMessage({
+                      type: 'TIKTOK_AUTH_SUCCESS',
+                      code: code,
+                      state: state
+                  }, '*');
+                  spinner.style.display = 'none';
+                  title.textContent = 'Success!';
+                  title.className = 'success';
+                  message.textContent = 'Closing window...';
+                  setTimeout(function() { window.close(); }, 1500);
+              } else {
+                  window.opener.postMessage({
+                      type: 'TIKTOK_AUTH_ERROR',
+                      error: 'Missing authorization code'
+                  }, '*');
+                  spinner.style.display = 'none';
+                  title.textContent = 'Error';
+                  title.className = 'error';
+                  message.textContent = 'Missing authorization code';
+                  setTimeout(function() { window.close(); }, 2000);
+              }
           } else {
-              document.querySelector('.container').innerHTML = '<h2>Error</h2><p>Missing authorization code</p>';
+              // No opener - redirect to frontend callback page
+              const localUrl = 'http://localhost:6050/auth/tiktok/callback';
+              if (error) {
+                  window.location.href = localUrl + '?error=' + encodeURIComponent(error) + '&error_description=' + encodeURIComponent(errorDescription || '');
+              } else if (code && state) {
+                  window.location.href = localUrl + '?code=' + encodeURIComponent(code) + '&state=' + encodeURIComponent(state);
+              } else {
+                  spinner.style.display = 'none';
+                  title.textContent = 'Error';
+                  message.textContent = 'Missing authorization code';
+              }
           }
       </script>
   </body>
